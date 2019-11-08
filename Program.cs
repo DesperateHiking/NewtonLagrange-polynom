@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NewtonLagrange_polynom
 {
@@ -21,32 +17,39 @@ namespace NewtonLagrange_polynom
 
             for (var i = result.Length - 1; i >= 0; i--)
             {
-                Console.Write("{0} * X^{1} + ", result[i], i);
+                char sign;
+                if (result[i] < 0)
+                {
+                    sign = '-';
+                    result[i] = Math.Abs(result[i]);
+                }                 
+                else sign = '+';
+                Console.Write("{0} {1} * X^{2} ", sign, result[i], i);
             }
         }
 
         static void GetLagrangePolynom(double[] result, double[] xArr, double y, int iteration)
         {
             var xi = xArr[iteration];
-
+            var tmpArr = new double[xArr.Length - 1];
             var denominator = 1.0;
 
-            for (int i = 0; i < xArr.Length; i++)
-            {                
+            for (int i = 0, j = 0; i < xArr.Length; i++, j++)
+            {
+                if (xi != xArr[i])
+                {
+                    tmpArr[j] = xArr[i];                    
+                }
+                else j--;
+
                 if (i == iteration)
                     continue;
                 denominator *= xi - xArr[i];
             }
 
-            if (iteration == xArr.Length)
-            {
-                result[0] += xArr[iteration - 1] * xArr[iteration + 1] / denominator * y;
-                result[1] += (xArr[iteration - 1] + xArr[iteration + 1]) / denominator * y;
-            }
-
-            result[0] += xArr[iteration - 1] * xArr[iteration + 1] / denominator * y;
-            result[1] += (xArr[iteration - 1] + xArr[iteration + 1]) / denominator * y;
-            result[2] += 1 / denominator;
+            result[0] += tmpArr[0] * tmpArr[1] / denominator * y;
+            result[1] += -(tmpArr[0] + tmpArr[1]) / denominator * y;
+            result[2] += 1 / denominator * y;
         }
 
         static void Main(string[] args)
