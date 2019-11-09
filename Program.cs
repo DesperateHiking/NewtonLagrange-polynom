@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NewtonLagrange_polynom
 {
     class Program
     {
-        static void LagrangeMethod(double[] xArr, double[] yArr)
+        static void LagrangeMethod(Dictionary<double, double> points)
         {
-            var result = new double[xArr.Length];
-
-            for (var i = 0; i < xArr.Length; i++)
+            var result = new double[points.Count];
+            var iteration = 0;
+            foreach (var p in points)
             {
-                if (yArr[i] == 0)
+                if (p.Value == 0)
                     continue;
-                GetLagrangePolynom(result, xArr, yArr[i], i);
+                var xi = p.Key;
+                GetLagrangePolynom(result, points, xi, p.Value);
+                iteration++;
             }
 
             for (var i = result.Length - 1; i >= 0; i--)
@@ -28,23 +31,21 @@ namespace NewtonLagrange_polynom
             }
         }
 
-        static void GetLagrangePolynom(double[] result, double[] xArr, double y, int iteration)
+        static void GetLagrangePolynom(double[] result, Dictionary<double, double> points, double xi, double y)
         {
-            var xi = xArr[iteration];
-            var tmpArr = new double[xArr.Length - 1];
+            var tmpArr = new double[points.Count - 1];
             var denominator = 1.0;
+            int j = 0;
 
-            for (int i = 0, j = 0; i < xArr.Length; i++, j++)
+            foreach (var p in points)
             {
-                if (xi != xArr[i])
+                if (xi != p.Key)
                 {
-                    tmpArr[j] = xArr[i];                    
+                    tmpArr[j] = p.Key;
+                    denominator *= xi - p.Key;
                 }
                 else j--;
-
-                if (i == iteration)
-                    continue;
-                denominator *= xi - xArr[i];
+                j++;
             }
 
             result[0] += tmpArr[0] * tmpArr[1] / denominator * y;
@@ -54,12 +55,10 @@ namespace NewtonLagrange_polynom
 
         static void Main(string[] args)
         {
-            var xArr = new double[] { 2, 3, 4 };
-            var yArr = new double[] { 0, 3, 1 };
+            var points = new Dictionary<double, double>() { [2] = 0, [3] = 3, [4] = 1 };
 
-            LagrangeMethod(xArr, yArr);
+            LagrangeMethod(points);
             Console.ReadKey();
-
         }
     }
 }
