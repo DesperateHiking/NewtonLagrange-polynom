@@ -8,14 +8,13 @@ namespace NewtonLagrange_polynom
         static void LagrangeMethod(Dictionary<double, double> points)
         {
             var result = new double[points.Count];
-            var iteration = 0;
+
             foreach (var p in points)
             {
                 if (p.Value == 0)
                     continue;
                 var xi = p.Key;
                 GetLagrangePolynom(result, points, xi, p.Value);
-                iteration++;
             }
 
             for (var i = result.Length - 1; i >= 0; i--)
