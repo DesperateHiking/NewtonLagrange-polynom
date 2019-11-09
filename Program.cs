@@ -5,6 +5,50 @@ namespace NewtonLagrange_polynom
 {
     class Program
     {
+        static void NewtonMethod(Dictionary<double, double> points)
+        {
+            var xList = new List<double>();
+            var result = new double[points.Count];
+            var i = 0;
+
+            foreach (var p in points)
+            {
+                xList.Add(p.Key);
+                result[i] = GetDividedDifference(points, xList, i);
+                i++;
+            }
+        }
+
+        static double GetDividedDifference(Dictionary<double, double> points, List<double> xList, int order)
+        {
+            double result;
+
+            if (order == 0)
+            {
+                result = points[xList[0]];
+            }
+            else
+            {
+                var tmpList1 = new List<double>();
+                var tmpList2 = new List<double>();
+
+                foreach (var e in xList)
+                {
+                    tmpList1.Add(e);
+                    tmpList2.Add(e);
+                }
+                tmpList1.RemoveAt(0);
+                tmpList2.RemoveAt(tmpList2.Count - 1);
+
+                var firstDiff = GetDividedDifference(points, tmpList1, order - 1);
+                var secondDiff = GetDividedDifference(points, tmpList2, order - 1);
+                var denominator = xList[xList.Count - 1] - xList[0];
+
+                result = (firstDiff - secondDiff) / denominator;
+            }
+            return result;
+        }
+
         static void LagrangeMethod(Dictionary<double, double> points)
         {
             var result = new double[points.Count];
@@ -57,6 +101,7 @@ namespace NewtonLagrange_polynom
             var points = new Dictionary<double, double>() { [2] = 0, [3] = 3, [4] = 1 };
 
             LagrangeMethod(points);
+            NewtonMethod(points);
             Console.ReadKey();
         }
     }
