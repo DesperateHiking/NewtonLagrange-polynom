@@ -8,15 +8,32 @@ namespace NewtonLagrange_polynom
         static void NewtonMethod(Dictionary<double, double> points)
         {
             var xList = new List<double>();
+            var diffArr = new double[points.Count];
             var result = new double[points.Count];
             var i = 0;
 
             foreach (var p in points)
             {
                 xList.Add(p.Key);
-                result[i] = GetDividedDifference(points, xList, i);
+                diffArr[i] = GetDividedDifference(points, xList, i);
+                if (i == 0)
+                    result[0] += diffArr[i];
+                if (i == 1)
+                {
+                    result[0] += -xList[0] * diffArr[i];
+                    result[1] += diffArr[i];
+                }
+                if (i == 2)
+                {
+                    result[0] += xList[0] * xList[1] * diffArr[i];
+                    result[1] += -(xList[0] + xList[1]) * diffArr[i];
+                    result[2] += diffArr[i];
+                }
                 i++;
             }
+            Console.WriteLine("Ньютон");
+            PrintResult(result);
+
         }
 
         static double GetDividedDifference(Dictionary<double, double> points, List<double> xList, int order)
@@ -61,6 +78,12 @@ namespace NewtonLagrange_polynom
                 GetLagrangePolynom(result, points, xi, p.Value);
             }
 
+            Console.WriteLine("Лагранж");
+            PrintResult(result);
+        }
+
+        static void PrintResult(double[] result)
+        {
             for (var i = result.Length - 1; i >= 0; i--)
             {
                 char sign;
@@ -68,14 +91,16 @@ namespace NewtonLagrange_polynom
                 {
                     sign = '-';
                     result[i] = Math.Abs(result[i]);
-                }                 
+                }
                 else sign = '+';
                 Console.Write("{0} {1} * X^{2} ", sign, result[i], i);
             }
+            Console.WriteLine();
         }
 
         static void GetLagrangePolynom(double[] result, Dictionary<double, double> points, double xi, double y)
         {
+            var tmpList = new List<double>();
             var tmpArr = new double[points.Count - 1];
             var denominator = 1.0;
             int j = 0;
@@ -84,6 +109,7 @@ namespace NewtonLagrange_polynom
             {
                 if (xi != p.Key)
                 {
+                    tmpList.Add(p.Key);
                     tmpArr[j] = p.Key;
                     denominator *= xi - p.Key;
                 }
@@ -91,14 +117,19 @@ namespace NewtonLagrange_polynom
                 j++;
             }
 
-            result[0] += tmpArr[0] * tmpArr[1] / denominator * y;
-            result[1] += -(tmpArr[0] + tmpArr[1]) / denominator * y;
+            result[0] += tmpList[0] * tmpList[1] / denominator * y;
+            result[1] += -(tmpList[0] + tmpList[1]) / denominator * y;
             result[2] += 1 / denominator * y;
         }
 
         static void Main(string[] args)
         {
-            var points = new Dictionary<double, double>() { [2] = 0, [3] = 3, [4] = 1 };
+            var points = new Dictionary<double, double>()
+            {
+                [-2] = 1,
+                [1] = 4,
+                [4] = 1
+            };
 
             LagrangeMethod(points);
             NewtonMethod(points);
