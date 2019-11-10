@@ -31,9 +31,9 @@ namespace NewtonLagrange_polynom
                 }
                 i++;
             }
-            Console.WriteLine("Ньютон");
-            PrintResult(result);
 
+            Console.WriteLine("Ньютон");
+            Print(result);
         }
 
         static double GetDividedDifference(Dictionary<double, double> points, List<double> xList, int order)
@@ -63,6 +63,7 @@ namespace NewtonLagrange_polynom
 
                 result = (firstDiff - secondDiff) / denominator;
             }
+
             return result;
         }
 
@@ -79,10 +80,10 @@ namespace NewtonLagrange_polynom
             }
 
             Console.WriteLine("Лагранж");
-            PrintResult(result);
+            Print(result);
         }
 
-        static void PrintResult(double[] result)
+        static void Print(double[] result)
         {
             for (var i = result.Length - 1; i >= 0; i--)
             {
@@ -107,13 +108,14 @@ namespace NewtonLagrange_polynom
 
             foreach (var p in points)
             {
-                if (xi != p.Key)
+                if (xi == p.Key)
+                    j--;
+                else
                 {
                     tmpList.Add(p.Key);
                     tmpArr[j] = p.Key;
                     denominator *= xi - p.Key;
                 }
-                else j--;
                 j++;
             }
 
