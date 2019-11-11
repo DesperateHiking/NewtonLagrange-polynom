@@ -102,21 +102,17 @@ namespace NewtonLagrange_polynom
         static void GetLagrangePolynom(double[] result, Dictionary<double, double> points, double xi, double y)
         {
             var tmpList = new List<double>();
-            var tmpArr = new double[points.Count - 1];
             var denominator = 1.0;
-            int j = 0;
 
             foreach (var p in points)
             {
                 if (xi == p.Key)
-                    j--;
+                    continue;
                 else
                 {
                     tmpList.Add(p.Key);
-                    tmpArr[j] = p.Key;
                     denominator *= xi - p.Key;
                 }
-                j++;
             }
 
             result[0] += tmpList[0] * tmpList[1] / denominator * y;
